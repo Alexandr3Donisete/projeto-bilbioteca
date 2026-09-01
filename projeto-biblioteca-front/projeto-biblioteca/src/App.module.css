@@ -1,0 +1,31 @@
+.auth {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  background: linear-gradient(rgba(30, 15, 5, 0.45), rgba(30, 15, 5, 0.45)),
+    url("./assets/background-lib.jpg") center / cover no-repeat;
+}
+
+.titulo {
+  font-size: 32px;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  margin: 0;
+  text-align: center;
+  padding: 0 16px;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  padding: 8px 16px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+}
