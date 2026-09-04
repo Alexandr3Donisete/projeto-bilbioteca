@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.projeto_biblioteca.model.Livro;
 import school.sptech.projeto_biblioteca.repository.LivroRepository;
+import school.sptech.projeto_biblioteca.service.LivroService;
 
 import java.util.List;
 
@@ -13,17 +14,21 @@ import java.util.List;
 public class LivroController {
 
     private final LivroRepository livroRepository;
+    private final LivroService livroService;
 
-    public LivroController(LivroRepository livroRepository) {
+    public LivroController(LivroRepository livroRepository, LivroService livroService) {
         this.livroRepository = livroRepository;
+        this.livroService = livroService;
     }
 
     @GetMapping
-    public ResponseEntity<List<Livro>> listarTodos(@RequestParam(required = false) Integer usuarioId) {
-        if (usuarioId != null) {
-            return ResponseEntity.status(200).body(livroRepository.findByUsuarioId(usuarioId));
-        }
+    public ResponseEntity<List<Livro>> listarTodos() {
         return ResponseEntity.status(200).body(livroRepository.findAll());
+    }
+
+    @GetMapping("/usuario/{usuarioId}")
+    public ResponseEntity<List<Livro>> listarPorUsuario(@PathVariable Integer usuarioId) {
+        return ResponseEntity.status(200).body(livroService.listarPorUsuario(usuarioId));
     }
 
     @PostMapping
@@ -53,6 +58,24 @@ public class LivroController {
         }
         livroRepository.deleteById(id);
         return ResponseEntity.status(204).build();
+    }
+
+    @PostMapping("/{id}/emprestar")
+    public ResponseEntity<Void> emprestar(@PathVariable Integer id, @RequestParam Integer usuarioId) {
+        Livro livro = livroService.emprestar(id, usuarioId);
+        if (livro == null) {
+            return ResponseEntity.status(400).build();
+        }
+        return ResponseEntity.status(201).build();
+    }
+
+    @PostMapping("/{id}/devolver")
+    public ResponseEntity<Void> devolver(@PathVariable Integer id, @RequestParam Integer usuarioId) {
+        Livro livro = livroService.devolver(id, usuarioId);
+        if (livro == null) {
+            return ResponseEntity.status(400).build();
+        }
+        return ResponseEntity.status(200).build();
     }
 
     private boolean dataIsValid(Livro livro) {

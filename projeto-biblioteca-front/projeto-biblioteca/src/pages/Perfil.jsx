@@ -11,7 +11,7 @@ function Perfil({ usuario }) {
   useEffect(() => {
     async function carregarLivros() {
       try {
-        const res = await fetch(`${API}/livros?usuarioId=${usuario.id}`, { method: "GET" })
+        const res = await fetch(`${API}/livros/usuario/${usuario.id}`, { method: "GET" })
         const data = await res.json()
         setLivros(data)
       } catch {
@@ -21,14 +21,12 @@ function Perfil({ usuario }) {
     carregarLivros()
   }, [usuario.id])
 
-  async function handleRemoverDaColecao(livro) {
+  async function handleDevolver(livro) {
     try {
-      await fetch(`${API}/livros/${livro.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...livro, usuarioId: null }),
+      await fetch(`${API}/livros/${livro.id}/devolver?usuarioId=${usuario.id}`, {
+        method: "POST",
       })
-      const res = await fetch(`${API}/livros?usuarioId=${usuario.id}`, { method: "GET" })
+      const res = await fetch(`${API}/livros/usuario/${usuario.id}`, { method: "GET" })
       const data = await res.json()
       setLivros(data)
     } catch {
@@ -46,8 +44,8 @@ function Perfil({ usuario }) {
         <ul className={styles.list}>
           {livros.map((livro) => (
             <CardLivro key={livro.id} livro={livro}>
-              <Botao onClick={() => handleRemoverDaColecao(livro)} variante="secundario">
-                Remover
+              <Botao onClick={() => handleDevolver(livro)} variante="secundario">
+                Devolver
               </Botao>
             </CardLivro>
           ))}

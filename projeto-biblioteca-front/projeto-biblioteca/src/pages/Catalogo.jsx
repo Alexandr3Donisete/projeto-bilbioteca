@@ -17,7 +17,7 @@ function Catalogo({ usuario }) {
         const todos = await resTodos.json()
         setLivros(todos)
 
-        const resMeus = await fetch(`${API}/livros?usuarioId=${usuario.id}`, { method: "GET" })
+        const resMeus = await fetch(`${API}/livros/usuario/${usuario.id}`, { method: "GET" })
         const meus = await resMeus.json()
         setMeusLivros(meus)
       } catch {
@@ -30,14 +30,16 @@ function Catalogo({ usuario }) {
 
   const meusIds = meusLivros.map((l) => l.id)
 
-  async function handleAdicionar(livro) {
+  async function handlePegar(livro) {
     try {
-      await fetch(`${API}/livros/${livro.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...livro, usuarioId: usuario.id }),
+      await fetch(`${API}/livros/${livro.id}/emprestar?usuarioId=${usuario.id}`, {
+        method: "POST",
       })
-      const resMeus = await fetch(`${API}/livros?usuarioId=${usuario.id}`, { method: "GET" })
+      const resTodos = await fetch(`${API}/livros`, { method: "GET" })
+      const todos = await resTodos.json()
+      setLivros(todos)
+
+      const resMeus = await fetch(`${API}/livros/usuario/${usuario.id}`, { method: "GET" })
       const meus = await resMeus.json()
       setMeusLivros(meus)
     } catch {
@@ -58,8 +60,8 @@ function Catalogo({ usuario }) {
               {meusIds.includes(livro.id) ? (
                 <span className={styles.jaAdicionado}>Na coleção</span>
               ) : (
-                <Botao onClick={() => handleAdicionar(livro)}>
-                  Adicionar
+                <Botao onClick={() => handlePegar(livro)} disabled={livro.quantidade <= 0}>
+                  Pegar
                 </Botao>
               )}
             </CardLivro>

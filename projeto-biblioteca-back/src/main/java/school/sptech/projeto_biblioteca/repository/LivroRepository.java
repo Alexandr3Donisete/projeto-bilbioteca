@@ -26,11 +26,6 @@ public class LivroRepository {
         return jdbcTemplate.query(sql, mapper);
     }
 
-    public List<Livro> findByUsuarioId(Integer usuarioId) {
-        String sql = "SELECT * FROM livro WHERE usuario_id = ? ORDER BY id";
-        return jdbcTemplate.query(sql, mapper, usuarioId);
-    }
-
     public Livro findById(Integer id) {
         String sql = "SELECT * FROM livro WHERE id = ?";
         List<Livro> livros = jdbcTemplate.query(sql, mapper, id);
@@ -39,12 +34,12 @@ public class LivroRepository {
 
     public Livro save(Livro livro) {
         if (livro.getId() != null && findById(livro.getId()) != null) {
-            String sql = "UPDATE livro SET titulo = ?, ano_publicacao = ?, genero = ?, quantidade = ?, autor = ?, usuario_id = ? WHERE id = ?";
-            jdbcTemplate.update(sql, livro.getTitulo(), livro.getAnoPublicacao(), livro.getGenero(), livro.getQuantidade(), livro.getAutor(), livro.getUsuarioId(), livro.getId());
+            String sql = "UPDATE livro SET titulo = ?, ano_publicacao = ?, genero = ?, quantidade = ?, autor = ? WHERE id = ?";
+            jdbcTemplate.update(sql, livro.getTitulo(), livro.getAnoPublicacao(), livro.getGenero(), livro.getQuantidade(), livro.getAutor(), livro.getId());
             return livro;
         }
 
-        String sql = "INSERT INTO livro (titulo, ano_publicacao, genero, quantidade, autor, usuario_id) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO livro (titulo, ano_publicacao, genero, quantidade, autor) VALUES (?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -53,11 +48,6 @@ public class LivroRepository {
             ps.setString(3, livro.getGenero());
             ps.setInt(4, livro.getQuantidade());
             ps.setString(5, livro.getAutor());
-            if (livro.getUsuarioId() != null) {
-                ps.setInt(6, livro.getUsuarioId());
-            } else {
-                ps.setNull(6, java.sql.Types.INTEGER);
-            }
             return ps;
         }, keyHolder);
         livro.setId(keyHolder.getKey().intValue());
@@ -67,5 +57,10 @@ public class LivroRepository {
     public void deleteById(Integer id) {
         String sql = "DELETE FROM livro WHERE id = ?";
         jdbcTemplate.update(sql, id);
+    }
+
+    public void atualizarQuantidade(Integer id, int delta) {
+        String sql = "UPDATE livro SET quantidade = quantidade + ? WHERE id = ?";
+        jdbcTemplate.update(sql, delta, id);
     }
 }

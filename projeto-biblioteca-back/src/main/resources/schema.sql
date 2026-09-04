@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS usuario_livro;
 DROP TABLE IF EXISTS livro;
 DROP TABLE IF EXISTS usuario;
 
@@ -14,8 +15,14 @@ CREATE TABLE livro (
     ano_publicacao INT NOT NULL,
     genero VARCHAR(100) NOT NULL,
     quantidade INT NOT NULL CHECK (quantidade >= 0),
-    autor VARCHAR(100) NOT NULL,
-    usuario_id INT,
-    CONSTRAINT fk_livro_usuario
-        FOREIGN KEY (usuario_id) REFERENCES usuario(id)
+    autor VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE usuario_livro (
+    usuario_id INT NOT NULL,
+    livro_id INT NOT NULL,
+    data_emprestimo DATE DEFAULT CURRENT_DATE,
+    PRIMARY KEY (usuario_id, livro_id),
+    FOREIGN KEY (usuario_id) REFERENCES usuario(id),
+    FOREIGN KEY (livro_id) REFERENCES livro(id)
 );

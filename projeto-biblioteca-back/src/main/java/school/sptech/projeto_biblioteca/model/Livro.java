@@ -7,19 +7,17 @@ public class Livro {
     private String genero;
     private Integer quantidade;
     private String autor;
-    private Integer usuarioId;
 
     public Livro() {
     }
 
-    public Livro(Integer id, String titulo, Integer anoPublicacao, String genero, Integer quantidade, String autor, Integer usuarioId) {
+    public Livro(Integer id, String titulo, Integer anoPublicacao, String genero, Integer quantidade, String autor) {
         this.id = id;
         this.titulo = titulo;
         this.anoPublicacao = anoPublicacao;
         this.genero = genero;
         this.quantidade = quantidade;
         this.autor = autor;
-        this.usuarioId = usuarioId;
     }
 
     public Integer getId() {
@@ -68,13 +66,5 @@ public class Livro {
 
     public void setAutor(String autor) {
         this.autor = autor;
-    }
-
-    public Integer getUsuarioId() {
-        return usuarioId;
-    }
-
-    public void setUsuarioId(Integer usuarioId) {
-        this.usuarioId = usuarioId;
     }
 }
