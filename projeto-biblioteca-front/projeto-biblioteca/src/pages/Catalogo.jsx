@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import Botao from "../components/Botao.jsx"
 import CardLivro from "../components/CardLivro.jsx"
+import MensagemErro from "../components/MensagemErro.jsx"
 import listStyles from "./listStyles.module.css"
 import styles from "./Catalogo.module.css"
 
@@ -9,6 +10,7 @@ const API = "http://localhost:8080"
 function Catalogo({ usuario }) {
   const [livros, setLivros] = useState([])
   const [meusLivros, setMeusLivros] = useState([])
+  const [erro, setErro] = useState("")
 
   useEffect(() => {
     async function carregarLivros() {
@@ -43,13 +45,15 @@ function Catalogo({ usuario }) {
       const meus = await resMeus.json()
       setMeusLivros(meus)
     } catch {
-      // falha silenciosa
+      setErro("Erro ao pegar livro. Tente novamente.")
     }
   }
 
   return (
     <div className={listStyles.container}>
       <h2> Catálogo de Livros </h2>
+
+      <MensagemErro texto={erro} />
 
       {livros.length === 0 ? (
         <p className={listStyles.vazio}>Nenhum livro encontrado.</p>

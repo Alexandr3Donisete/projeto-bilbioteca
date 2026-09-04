@@ -116,7 +116,7 @@ function AdminLivros({ usuario, onLogout }) {
       await fetch(`${API}/livros/${id}`, { method: "DELETE" })
       carregarLivros()
     } catch {
-      // falha silenciosa
+      setErro("Erro ao excluir livro. Tente novamente.")
     }
   }
 
